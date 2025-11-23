@@ -1,0 +1,65 @@
+{
+  "name": "crm",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@ant-design/icons": "^5.6.1",
+    "@ant-design/v5-patch-for-react-19": "^1.0.3",
+    "@ckeditor/ckeditor5-react": "^9.5.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/material": "^7.1.1",
+    "@mui/styled-engine-sc": "^7.1.1",
+    "@mui/x-charts": "^8.14.1",
+    "@mui/x-data-grid": "^8.15.0",
+    "@paypal/react-paypal-js": "^8.9.2",
+    "@stripe/react-stripe-js": "^3.6.0",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
+    "@testing-library/user-event": "^13.5.0",
+    "antd": "^5.24.2",
+    "axios": "^1.12.2",
+    "bcrypt": "^5.1.1",
+    "bootstrap": "^5.3.8",
+    "dayjs": "^1.11.13",
+    "dayjs-plugin-utc": "^0.1.2",
+    "dayjs-timezone-iana-plugin": "^0.1.0",
+    "firebase": "^11.6.0",
+    "lucide-react": "^0.546.0",
+    "moment": "^2.30.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-highlight-words": "^0.21.0",
+    "react-router-dom": "^7.2.0",
+    "react-scripts": "5.0.1",
+    "recharts": "^3.3.0",
+    "socket.io-client": "^4.8.1",
+    "styled-components": "^6.1.18",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

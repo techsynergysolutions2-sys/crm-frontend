@@ -1,0 +1,178 @@
+:root {
+  --bg: #f9fafb;
+  --card: #fff;
+  --text: #111827;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --primary: #4f46e5;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --radius: 12px;
+  --shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+
+body, html, #root {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  font-family: system-ui, sans-serif;
+}
+
+.crm-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
+
+.header {
+  background: var(--card);
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.nav-buttons button {
+  margin-left: 8px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.nav-buttons button.active {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+}
+
+.grid {
+  flex: 1;
+  padding: 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: var(--card);
+  padding: 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
+.card-meta {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.card-details p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.card-details strong {
+  color: var(--muted);
+}
+
+.status {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: capitalize;
+  margin-top: 12px;
+}
+
+/* Task statuses */
+.status.todo { background: var(--border); color: var(--text); }
+.status.in-progress { background: var(--warning); color: #fff; }
+.status.done { background: var(--success); color: #fff; }
+.status.blocked { background: var(--danger); color: #fff; }
+
+/* Project statuses */
+.status.active { background: var(--success); color: #fff; }
+.status.pending { background: var(--warning); color: #fff; }
+.status.completed { background: var(--primary); color: #fff; }
+.status.on-hold { background: var(--danger); color: #fff; }
+
+.progress-bar {
+  background: var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  height: 8px;
+  margin: 12px 0;
+}
+
+.progress {
+  height: 8px;
+  background: var(--primary);
+}
+
+.team {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4f46e5, #22d3ee);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filters label {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.filters select {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  font-size: 14px;
+  cursor: pointer;
+}
+
