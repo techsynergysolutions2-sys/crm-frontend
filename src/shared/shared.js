@@ -72,8 +72,8 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024;
 // Allowed file types
 const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/jpg", "application/pdf"];
 
-export const url = 'http://192.168.0.6:5000'
-// export const url = 'http://ec2-13-60-191-59.eu-north-1.compute.amazonaws.com:5000'
+// export const url = 'http://192.168.0.6:5000'
+export const url = 'http://ec2-13-60-191-59.eu-north-1.compute.amazonaws.com:5000'
 
 export const amou = 4.99
 
