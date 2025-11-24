@@ -16,10 +16,6 @@ function Login(){
 
     const navigate = useNavigate();
     const [{}, dispatch] = useStateValue();
-    const user_c = {
-        username: 'jongisizwe66@gmail.com',
-        password: 'Junior980417'
-    }
 
     const fnNavRegister = () => {
         navigate('/register')
@@ -131,7 +127,6 @@ function Login(){
         <Card style={{ width: 600, boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)" }}>
             <Typography style={{textAlign: 'center', fontFamily: "'Poppins', sans-serif", fontSize: 28, fontWeight: 600, marginBottom: 15}}>Eben CRM</Typography>
             <Form
-                initialValues={user_c}
                 name="basic"
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 16 }}
