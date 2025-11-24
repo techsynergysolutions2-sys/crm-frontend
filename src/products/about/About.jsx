@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Users, Target, Zap, Shield, TrendingUp, Award } from 'lucide-react';
+import {useNavigate, Outlet } from 'react-router-dom'
 
 export default function AboutPage() {
   const [scrolled, setScrolled] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -441,7 +443,7 @@ export default function AboutPage() {
           <p className="cta-subtitle">
             Join thousands of companies already using our CRM to drive growth and success
           </p>
-          <button className="btn btn-cta">Start now</button>
+          <button className="btn btn-cta" onClick={() => navigate('/login')}>Start now</button>
         </div>
       </section>
     </div>
