@@ -5,7 +5,7 @@ import {useNavigate, Outlet } from 'react-router-dom'
 import {onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import {auth, db} from '../shared/firebase'
-// import { fnLogin } from '../shared/shared';
+import { fnLogin,fnCheckExpiryDate } from '../shared/shared';
 
 import SidebarMenu from '../components/SidebarMenu';
 
@@ -60,7 +60,7 @@ function Home() {
   const [userInfor, setUserInfor] = useState(null)
 
   useEffect(() => {
-
+fnCheckExpiryDate()
     // console.log('************************')
     // console.log(fnLogin())
     // console.log('***************************')

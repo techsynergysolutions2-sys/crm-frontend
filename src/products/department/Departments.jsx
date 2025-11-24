@@ -2,7 +2,7 @@ import React,{ useRef, useState, useEffect } from 'react'
 import {Col, Row,Button, Input, Space, Table,FloatButton,Tooltip,Switch   } from 'antd';
 import { SearchOutlined,EditOutlined,PlusOutlined,FormOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
-import {fnGetData } from '../../shared/shared';
+import {fnGetData,fnCheckExpiryDate,fnLogin } from '../../shared/shared';
 import {useNavigate } from 'react-router-dom'
 
 
@@ -14,7 +14,9 @@ function Departments() {
   const [filteredDepartments, setFilteredDepartments] = useState([])
 
   useEffect(() => {
-
+    // if(fnCheckExpiryDate){
+    //   window.location.replace("http://localhost:3000/login");
+    // }
     fetchGroups();
 
   },[])

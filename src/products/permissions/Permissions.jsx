@@ -210,7 +210,7 @@ const PermissionsTab = () => {
         </Radio.Group>
       </div>
       
-      <div style={{ marginTop: '20px', textAlign: 'right' }}>
+      {/* <div style={{ marginTop: '20px', textAlign: 'right' }}>
         <button 
           style={{
             padding: '10px 20px',
@@ -226,7 +226,15 @@ const PermissionsTab = () => {
         >
           Save Permissions
         </button>
-      </div>
+      </div> */}
+      <div className="form-actions">
+        <button onClick={handleSavePermissions} className="btn btn-primary">
+            Save Permissions
+        </button>
+        <button type="button" className="btn btn-light" onClick={() => fnGoBack()}>
+            Cancel
+        </button>
+        </div>
     </div>
     </Context.Provider>
   );

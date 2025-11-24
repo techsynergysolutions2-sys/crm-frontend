@@ -4,6 +4,7 @@ import {Checkbox ,InputNumber ,Image ,Input,Select,Form,Upload,notification} fro
 import './product.css';
 import { PlusOutlined } from '@ant-design/icons';
 import {fnCreateData,fnUpateData,fnFileURls,fnFileURls2,fnGetDirectData} from '../../shared/shared'
+import AuditTrail from '../../components/AuditTrail';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -41,6 +42,7 @@ const Product = () => {
     const [previewImage, setPreviewImage] = useState('');
     const [fileList, setFileList] = useState([]);
     const [api, contextHolder] = notification.useNotification();
+    const [openAuidt, setOpenAudit] = useState(false)
 
 
     const fnGoBack = () => {
@@ -170,6 +172,7 @@ const Product = () => {
                         values['isactive'] = 0
                     }
                     values['id'] = product['id']
+                    values['updateby'] = sessionStorage.getItem('uid')
                     const data = await fnUpateData('products',"products", values,'id = ?',[product['id']], 'update');
                     if(data?.affectedRows > 0){
                         let placement = 'topRight'
@@ -329,11 +332,19 @@ const Product = () => {
         }
     }
 
+    const fnShowAudit = (val) =>{
+        setOpenAudit(val)
+    }
+
     const contextValue = useMemo(() => ({ name: 'Ant Design' }), []);
 
   return (
     <Context.Provider value={contextValue}>
         {contextHolder}
+
+        {/* Audit */}
+        <AuditTrail recid={product?.id} pageid={2} showhide={openAuidt} fnShowAudit={fnShowAudit}/>
+
     <div className="add-product-page" style={{width: '100%', height: '98%',overflowY: 'scroll',scrollbarWidth: 'none'}}>
       <div className="container">
         <h1 className="page-title">Add New Product</h1>
@@ -485,7 +496,16 @@ const Product = () => {
                     <button type="submit" className="btn btn-primary">
                         Save Product
                     </button>
-                    <button type="button" className="btn btn-outline" onClick={() => fnGoBack()}>
+                    {
+                        JSON.stringify(product) === "{}" ? (
+                            null
+                        ):(
+                            <button type="button" className="btn btn-secondary" onClick={() => fnShowAudit(true)}>
+                                Audit
+                            </button>
+                        )
+                    }
+                    <button type="button" className="btn btn-light" onClick={() => fnGoBack()}>
                         Cancel
                     </button>
                     </div>

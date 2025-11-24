@@ -170,14 +170,22 @@ function Department() {
                         </Col>
                     </Row>
     
-                    <Form.Item label={null}>
+                    {/* <Form.Item label={null}>
                       <Button type="primary" htmlType="submit" style={{backgroundColor: '#1092a7', color: '#fff'}}>
                           Save
                       </Button>
                       <Button type="button" className="btn btn-outline" onClick={() => fnGoBack()}>
                           Cancel
                       </Button>
-                    </Form.Item>
+                    </Form.Item> */}
+                    <div className="form-actions">
+                    <button type="submit" className="btn btn-primary">
+                        Save Department
+                    </button>
+                    <button type="button" className="btn btn-light" onClick={() => fnGoBack()}>
+                        Cancel
+                    </button>
+                    </div>
                 </Form>
               </Col>
             </Row>

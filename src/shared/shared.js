@@ -9,7 +9,8 @@ import {
     LineChartOutlined,
     ShoppingCartOutlined,
     UnorderedListOutlined,
-    CalendarOutlined
+    CalendarOutlined,TeamOutlined,PartitionOutlined,SolutionOutlined,GroupOutlined,FolderOpenOutlined,SafetyOutlined,
+    FontSizeOutlined,SnippetsOutlined,TagsOutlined
 } from '@ant-design/icons';
 import {Avatar } from 'antd';
 
@@ -46,12 +47,22 @@ const fnLogin = () => {
   
 }
 
-// login
-// jongisizwe66@gmail.com
-// Junior980417
+ export const fnCheckExpiryDate = () =>{
+  const expdate = sessionStorage.getItem('expirydate')
+  const currdate = new Date().toISOString().slice(0, 16)
 
-// john@gmail.com
-// John@123
+  const ms = new Date(expdate).getTime();
+  const ms2 = new Date(currdate).getTime();
+
+  const total =   ms - ms2
+
+  if(total < 0 ){
+    return true
+  }else{
+    //not expired
+    return false
+  }
+}
 
 // main color #1092a7
 
@@ -61,8 +72,8 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024;
 // Allowed file types
 const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/jpg", "application/pdf"];
 
-// export const url = 'http://192.168.0.6:5000'
-export const url = 'http://ec2-13-60-191-59.eu-north-1.compute.amazonaws.com:5000'
+export const url = 'http://192.168.0.6:5000'
+// export const url = 'http://ec2-13-60-191-59.eu-north-1.compute.amazonaws.com:5000'
 
 export const amou = 4.99
 
@@ -360,37 +371,46 @@ export const fnConnectNavigation = (permissions) =>{
 
     var pages = [
       // getItem(1,'Dashboard', '/dashboard',<HomeOutlined /> ,),
-      getItem(2,'Inventory', '/inventory', <UnorderedListOutlined />,),
+      getItem(2,'Sales', '/inventory', <UnorderedListOutlined />,),
       getItem(3,'Orders', '/orders', <ShoppingCartOutlined />,),
       getItem(4,'Analytics', '/analytics', <LineChartOutlined />,),
-      getItem(5,'Tasks', '/tasklist',<FontColorsOutlined />),
-      getItem(6,'Projects', '/projects',<HomeOutlined /> ,),
-      getItem(7,'Tickets', '/tickets',<FontColorsOutlined />),
+      getItem(5,'Tasks', '/tasklist',<FontSizeOutlined />),
+      getItem(6,'Projects', '/projects',<SnippetsOutlined /> ,),
+      getItem(7,'Tickets', '/tickets',<TagsOutlined />),
       getItem(8,'Leave', '/leaves', <CalendarOutlined />),
-      getItem(9,'Employees', '/employees', <FullscreenExitOutlined />),
-      getItem(10,'Clients', '/clients', <FullscreenExitOutlined />),
+      getItem(9,'Employees', '/employees', <TeamOutlined />),
+      getItem(10,'Clients', '/clients', <SolutionOutlined />),
       // getItem(12,'Administrator', 'admin', <UserOutlined />, admin),
-      getItem(11,'Departments', '/departments', <UserOutlined />,),
-      getItem(12,'Permissions', '/permissionslist', <UserOutlined />,),
-      getItem(13,'Company profile', '/companyprofile', <UserOutlined />,),
-      getItem(14,'Groups', '/groups', <UserOutlined />,),
+      getItem(11,'Departments', '/departments', <PartitionOutlined />,),
+      getItem(12,'Permissions', '/permissionslist', <SafetyOutlined />,),
+      getItem(13,'Company profile', '/companyprofile', <FolderOpenOutlined />,),
+      getItem(14,'Groups', '/groups', <GroupOutlined />,),
       getItem(0,'Profile', '/profile', <Avatar size='default' src={sessionStorage.getItem('photourl')} />,),
       getItem(100,'Log out', '/login', <LockOutlined />)
     ]
 
     if(fnLogin() == false){
-      window.location.replace("http://localhost:3000/login");
+      window.location.replace("http://Ebencrm.com/login");
       return
     }
+
+    if(fnCheckExpiryDate == true ){
+      if(sessionStorage.getItem('grouptitle') == 'Administrator'){
+          window.location.href = "http://Ebencrm.com/companyprofile";
+      }else{
+        window.location.replace("http://Ebencrm.com/login");
+        return
+      }
+    }
   
-    if(sessionStorage.getItem('groupid') != '1'){
+    if(sessionStorage.getItem('grouptitle') != 'Administrator'){
       console.log('Check 1')
       let st = '' 
       st = sessionStorage.getItem('permissions')
       let arr = st.split(',').map(Number)
       console.log(arr)
       pages = pages.filter(page => arr.includes(page.id));
-    }else if(sessionStorage.getItem('groupid') == '1'){
+    }else if(sessionStorage.getItem('grouptitle') == 'Administrator'){
       console.log('Check 2')
       pages = pages
     }

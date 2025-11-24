@@ -4,6 +4,7 @@ import { SearchOutlined,DeleteOutlined  } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import { useLocation,useNavigate } from "react-router-dom";
 import { fnGetData,fnCreateData,fnUpateData } from '../../shared/shared';
+import AuditTrail from '../../components/AuditTrail';
 
 const { Content } = Layout;
 const { Option } = Select;
@@ -26,6 +27,7 @@ function Employee() {
   const [pass, setPass] = useState('')
   const [employee, Setemployee] =  useState(location.state)
   const [api, contextHolder] = notification.useNotification();
+  const [openAuidt, setOpenAudit] = useState(false)
 
   useEffect(() => {
     
@@ -56,6 +58,7 @@ function Employee() {
         values['companyid'] = sessionStorage.getItem('companyid')
         values['skills'] = skills
         values['isactive'] = 1
+        values['createdby'] = sessionStorage.getItem('uid')
         const data = await fnCreateData('employees',"employees", values, 'new');
         if(data.insertId != null || data.insertId != undefined){
           fnAddSkills(data.insertId,skills)
@@ -86,6 +89,8 @@ function Employee() {
     }else{
       try {
         delete values['password']
+        values['id'] = employee['id']
+        values['updateby'] = sessionStorage.getItem('uid')
         const data = await fnUpateData('employees',"employees", values,'id = ? AND isactive = ?',[employee['id'],1], 'update');
         if(data?.affectedRows > 0){
           api.success({
@@ -383,6 +388,8 @@ function Employee() {
       password: pass
     }
     try {
+      values['id'] = employee['id']
+      values['updateby'] = sessionStorage.getItem('uid')
       const data = await fnUpateData('employees',"employees", values,'id = ?',[employee['id']], 'update');
       if(data?.affectedRows > 0){
         api.success({
@@ -408,11 +415,19 @@ function Employee() {
     }
   };
 
+  const fnShowAudit = (val) =>{
+        setOpenAudit(val)
+    }
+
   const contextValue = useMemo(() => ({ name: 'Ant Design' }), []);
 
   return (
     <Context.Provider value={contextValue}>
     {contextHolder}
+
+    {/* Audit */}
+    <AuditTrail recid={employee?.id} pageid={9} showhide={openAuidt} fnShowAudit={fnShowAudit}/>
+
     <Content style={{width: '100%', height: '98%',overflowY: 'scroll',scrollbarWidth: 'none'}}>
 
         <Row style={{padding: 15, height: '100%', overflowY: 'scroll',scrollbarWidth: 'none'}}>
@@ -663,9 +678,26 @@ function Employee() {
                         }
 
                       <Col span={24} style={{ textAlign: 'right', marginTop: 20 }}>
-                        <Button type="primary" htmlType="submit">
+                        {/* <Button type="primary" htmlType="submit">
                           Save Employee
-                        </Button>
+                        </Button> */}
+                        <div className="form-actions">
+                        <button type="submit" className="btn btn-primary">
+                            Save Employee
+                        </button>
+                        {
+                            JSON.stringify(employee) === "{}" ? (
+                                null
+                            ):(
+                                <button type="button" className="btn btn-secondary" onClick={() => fnShowAudit(true)}>
+                                    Audit
+                                </button>
+                            )
+                        }
+                        <button type="button" className="btn btn-light" onClick={() => fnGoBack()}>
+                            Cancel
+                        </button>
+                        </div>
                       </Col>
                   </Row>
                 </Form>

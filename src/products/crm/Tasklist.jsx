@@ -35,7 +35,7 @@ function TaskCard({ task }) {
   return (
 
     <div className="card" onClick={() => fnNavTask(task)}>
-      <h2 className="card-title">{task.title}</h2>
+      <h2 className="card-title">{task.tasttitle}</h2>
       <p className="card-meta">
         Project: {task.title}
       </p>
@@ -67,7 +67,7 @@ export default function Tasks() {
       let sql = `
             SELECT t.*,CONCAT(e.firstname, ' ', e.lastname) AS created_by,
             p.title,CONCAT(ea.firstname, ' ', ea.lastname) AS assign_to,
-            td.description,
+            td.description,t.title As tasttitle,
             COALESCE(notes.notes, JSON_ARRAY()) AS notes
             FROM tasks t 
             LEFT JOIN projects p ON t.project = p.id
@@ -77,18 +77,19 @@ export default function Tasks() {
 
             LEFT JOIN (
               SELECT 
-                tn.id,
+                tn.id,tn.taskid,
                 JSON_ARRAYAGG(
                   JSON_OBJECT(
                     'idn', tn.id,
-                    'notes', tn.notes
+                    'notes', tn.notes,
+                    'taskid', tn.taskid
                   )
                 ) AS notes
               FROM tasks tl
               LEFT JOIN task_notes tn ON tl.id = tn.taskid
               WHERE tl.isactive = 1
               GROUP BY tl.id
-            ) notes ON notes.id = t.id
+            ) notes ON notes.taskid = t.id
 
             WHERE t.companyid = ${companyid} AND t.assignto = ${uid} AND t.isactive = 1
             GROUP BY t.id;

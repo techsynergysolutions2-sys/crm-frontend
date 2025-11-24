@@ -2,6 +2,7 @@ import React,{useState,useEffect,useMemo} from 'react'
 import {Layout, Button, Badge,Card ,Col, Row,Typography ,Input,Select,List,Form,Space,notification    } from 'antd';
 import { useNavigate,useLocation } from 'react-router-dom'
 import { Task_Workflow_Status,task_priority,fnGetDirectData,fnCreateData,fnUpateData } from '../../shared/shared';
+import AuditTrail from '../../components/AuditTrail';
 
 import SentCard from './components/SentCard';
 
@@ -22,6 +23,7 @@ function Task() {
   const [noteInput, setNoteInput] = useState(null)
   const [notes, setNotes] = useState([])
   const [api, contextHolder] = notification.useNotification();
+  const [openAuidt, setOpenAudit] = useState(false)
 
   var companyid = sessionStorage.getItem('companyid')
 
@@ -108,6 +110,7 @@ function Task() {
         }
       }else{
         values['id'] = task['id']
+        values['updateby'] = sessionStorage.getItem('uid')
         const data = await fnUpateData('tasks',"tasks", values,'id = ? AND isactive = ?',[task['id'],1], 'update');
         if(data?.affectedRows > 0){
           api.success({
@@ -152,7 +155,8 @@ function Task() {
     try {
       let values = {
         taskid: task.id,
-        notes: noteInput.trim()
+        notes: noteInput.trim(),
+        createdby: sessionStorage.getItem('uid')
       }
       const data = await fnCreateData('tasknotes',"task_notes", values, 'new');
       if(data.insertId != null || data.insertId != undefined){
@@ -173,11 +177,19 @@ function Task() {
 
   }
 
+  const fnShowAudit = (val) =>{
+      setOpenAudit(val)
+  }
+
   const contextValue = useMemo(() => ({ name: 'Ant Design' }), []);
 
   return (
     <Context.Provider value={contextValue}>
     {contextHolder}
+
+        {/* Audit */}
+        <AuditTrail recid={task?.id} pageid={5} showhide={openAuidt} fnShowAudit={fnShowAudit}/>
+
     <Content style={{height: '100%',overflowY: 'scroll',scrollbarWidth: 'none'}}>
 
       <Row style={{padding: 15, height: '100%'}}>
@@ -363,14 +375,31 @@ function Task() {
                   </Row>
 
 
-                  <Form.Item label={null}>
+                  {/* <Form.Item label={null}>
                     <Button type="primary" htmlType="submit" style={{backgroundColor: '#1092a7', color: '#fff'}}>
                       Save
                     </Button>
                     <Button type="default" onClick={() => fnGoBack()} style={{ marginLeft: 15}}>
                       Cancel
                     </Button>
-                  </Form.Item>
+                  </Form.Item> */}
+                  <div className="form-actions">
+                    <button type="submit" className="btn btn-primary">
+                        Save Task
+                    </button>
+                    {
+                        JSON.stringify(task) === "{}" ? (
+                            null
+                        ):(
+                            <button type="button" className="btn btn-secondary" onClick={() => fnShowAudit(true)}>
+                                Audit
+                            </button>
+                        )
+                    }
+                    <button type="button" className="btn btn-light" onClick={() => fnGoBack()}>
+                        Cancel
+                    </button>
+                  </div>
                 </Form>
               </Col>
             </Row>

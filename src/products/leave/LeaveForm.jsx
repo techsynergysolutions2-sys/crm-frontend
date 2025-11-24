@@ -2,6 +2,7 @@ import React,{ useState, useEffect,useMemo } from 'react';
 import {Button,Col, Row,Input,Select,Form,notification  } from 'antd';
 import {leave_type,leave_status,fnGetDirectData,fnCreateData,fnUpateData } from '../../shared/shared'
 import { useNavigate,useLocation } from 'react-router-dom'
+import AuditTrail from '../../components/AuditTrail';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -17,6 +18,7 @@ const LeaveForm = () => {
   const [leave, setleave] = useState(location.state)
   const [employees, setEmployees] = useState([])
   const [api, contextHolder] = notification.useNotification();
+  const [openAuidt, setOpenAudit] = useState(false)
 
   var companyid = sessionStorage.getItem('companyid')
 
@@ -77,6 +79,8 @@ const LeaveForm = () => {
             });
           }
       }else{
+        values['id'] = leave['id']
+        values['updateby'] = sessionStorage.getItem('uid')
         const data = await fnUpateData('leaves',"leaves", values,'id = ? AND isactive = ?',[leave['id'],1], 'update');
         if(data?.affectedRows > 0){
           api.success({
@@ -110,11 +114,19 @@ const LeaveForm = () => {
   const onFinishFailed = (values) => {
   }
 
+  const fnShowAudit = (val) =>{
+        setOpenAudit(val)
+    }
+
   const contextValue = useMemo(() => ({ name: 'Ant Design' }), []);
 
   return (
     <Context.Provider value={contextValue}>
     {contextHolder}
+
+    {/* Audit */}
+    <AuditTrail recid={leave?.id} pageid={8} showhide={openAuidt} fnShowAudit={fnShowAudit}/>
+
     <div className="container" style={{width: '100%', height: '98%',overflowY: 'scroll',scrollbarWidth: 'none'}}>
       <div className="card">
         <h2>Leave form</h2>
@@ -257,14 +269,33 @@ const LeaveForm = () => {
                 </Col>
             </Row>
 
-          <Form.Item label={null}>
+          {/* <Form.Item label={null}>
             <Button type="primary" htmlType="submit" style={{backgroundColor: '#1092a7', color: '#fff'}}>
               Submit
             </Button>
             <Button type="default" onClick={() => fnGoBack()} style={{ marginLeft: 15}}>
               Cancel
             </Button>
-          </Form.Item>
+          </Form.Item> */}
+
+            <div className="form-actions">
+              <button type="submit" className="btn btn-primary">
+                  Save Leave
+              </button>
+              {
+                  JSON.stringify(leave) === "{}" ? (
+                      null
+                  ):(
+                      <button type="button" className="btn btn-secondary" onClick={() => fnShowAudit(true)}>
+                          Audit
+                      </button>
+                  )
+              }
+              <button type="button" className="btn btn-light" onClick={() => fnGoBack()}>
+                  Cancel
+              </button>
+              </div>
+
         </Form>
       </div>
     </div>

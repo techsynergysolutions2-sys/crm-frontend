@@ -34,6 +34,7 @@ import Ticket from './products/tickets/Ticket';
 import Analytics from './products/analytics/Analytics';
 import Profile from './products/profile/Profile';
 // import Dashboard from './products/dashboard/Dashboard';
+import AboutPage from './products/about/About';
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
       <Routes>
           <Route Component={Login} path="/login"/>
           <Route Component={Register} path="/register"/>
+          <Route Component={AboutPage} path="/crm"/>
           <Route Component={Home} path="/">
             <Route Component={Tasks} path="/tasklist"/>
             <Route Component={Task} path="/task"/>

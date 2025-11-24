@@ -4,6 +4,7 @@ import {Layout,Button, Badge,Card ,Col, Row,Typography ,Input,Select,List,Form,D
 import {DeleteOutlined, UploadOutlined,UsergroupAddOutlined, FileAddOutlined,MoreOutlined,EyeOutlined  } from '@ant-design/icons';
 import { useNavigate,useLocation } from 'react-router-dom'
 import {fnGetDirectData,fnCreateData, fnUpateData,project_priority,task_priority, Task_Workflow_Status,Project_Workflow_Status,fnGetData,fnFileURls } from '../../shared/shared';
+import AuditTrail from '../../components/AuditTrail';
 
 import { styled } from '@mui/material/styles';
 import MButton from '@mui/material/Button';
@@ -47,6 +48,7 @@ function Project() {
   const [tasks, setTasks] = useState([])
   const [perc, setPerc] = useState(0)
   const [api, contextHolder] = notification.useNotification();
+  const [openAuidt, setOpenAudit] = useState(false)
 
   var companyid = sessionStorage.getItem('companyid')
   var usergroup = sessionStorage.getItem('usergroup')
@@ -218,6 +220,7 @@ function Project() {
           }
       }else{
         values['id'] = project['id']
+        values['updateby'] = sessionStorage.getItem('uid')
         const data = await fnUpateData('projects',"projects", values,'id = ? AND isactive = ?',[project['id'],1], 'update');
           if(data?.affectedRows > 0){
             api.success({
@@ -437,11 +440,20 @@ function Project() {
     await fnGetAttachments()
     setFilesModal(true)
   }
+
+  const fnShowAudit = (val) =>{
+        setOpenAudit(val)
+    }
+
   const contextValue = useMemo(() => ({ name: 'Ant Design' }), []);
 
   return (
     <Context.Provider value={contextValue}>
     {contextHolder}
+
+        {/* Audit */}
+        <AuditTrail recid={project?.id} pageid={6} showhide={openAuidt} fnShowAudit={fnShowAudit}/>
+
     <Content style={{height: '100%',overflowY: 'scroll',scrollbarWidth: 'none'}}>
 
       {/* invite modal */}
@@ -611,7 +623,7 @@ function Project() {
                 </Row>
 
                 <Form.Item label={null}>
-                <Button type="primary" htmlType="submit" style={{backgroundColor: '#5b2c6f', color: '#fff'}}>
+                <Button type="primary" htmlType="submit" style={{}}>
                     Save
                 </Button>
                 </Form.Item>
@@ -828,14 +840,31 @@ function Project() {
                   </Row>
 
 
-                  <Form.Item label={null}>
+                  {/* <Form.Item label={null}>
                     <Button type="primary" htmlType="submit" style={{backgroundColor: '#1092a7', color: '#fff'}}>
                       Save
                     </Button>
                     <Button type="default" onClick={() => fnGoBack()} style={{ marginLeft: 15}}>
                       Cancel
                     </Button>
-                  </Form.Item>
+                  </Form.Item> */}
+                  <div className="form-actions">
+                  <button type="submit" className="btn btn-primary">
+                      Save Project
+                  </button>
+                  {
+                      JSON.stringify(project) === "{}" ? (
+                          null
+                      ):(
+                          <button type="button" className="btn btn-secondary" onClick={() => fnShowAudit(true)}>
+                              Audit
+                          </button>
+                      )
+                  }
+                  <button type="button" className="btn btn-light" onClick={() => fnGoBack()}>
+                      Cancel
+                  </button>
+                  </div>
                 </Form>
               </Col>
             </Row>

@@ -2,7 +2,7 @@ import React, { useState, useEffect,useMemo } from 'react';
 import { Building2, Mail, Phone, MapPin, Globe, Users, Upload, Save } from 'lucide-react';
 import {InputNumber, Skeleton,Col, Row,Button ,Input ,Form,Modal,notification } from 'antd';
 import 'bootstrap/dist/css/bootstrap.css';
-import {fnGetData,fnUpateData,fnGetDirectData,url,amou,fnFileURls} from '../../shared/shared'
+import {fnGetData,fnUpateData,fnGetDirectData,url,amou,fnFileURls,fnCheckExpiryDate} from '../../shared/shared'
 import {useNavigate } from 'react-router-dom'
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import axios from 'axios';
@@ -17,6 +17,7 @@ export default function CompanyProfile() {
   const [employees, setEmployees] = useState([])
   const [space, setSpace] = useState(0)
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpenExpired, SetIsModalOpenExpired] = useState(fnCheckExpiryDate);
   const [success, setSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [numSpace, setNumSpace] = useState(0)
@@ -24,9 +25,10 @@ export default function CompanyProfile() {
   const [logo, setLogo] = useState('')
   const [api, contextHolder] = notification.useNotification();
   const navigate = useNavigate()
+  const [isExpired, setIsExpired] = useState(fnCheckExpiryDate)
 
   useEffect(() => {
-    
+    // console.log(isModalOpenExpired)
     fetchData()
   },[])
 
@@ -184,11 +186,20 @@ export default function CompanyProfile() {
     totalMonths = -1 * totalMonths
 
     try {
-      const res = await axios.post(`${url}/space`, {
+      if(isModalOpenExpired){
+        const res = await axios.post(`${url}/space`, {
+        amount: (amou * employees.length),
+        action: 'orders'
+      });
+      return res.data.id;
+      }else{
+        const res = await axios.post(`${url}/space`, {
         amount: (amou * numSpace) * totalMonths,
         action: 'orders'
       });
       return res.data.id;
+      }
+      
     } catch (err) {
       api.warning({
           title: ``,
@@ -234,6 +245,23 @@ export default function CompanyProfile() {
                   background: "#e2e2e2ff"
               },
           });
+          
+          if(isExpired){
+            const currdate = new Date().toISOString().slice(0, 16)
+            const date = new Date(currdate);
+
+            date.setUTCFullYear(date.getUTCFullYear() + 1);
+            let obj = {
+              expirydate: date
+            }
+            const data = await fnUpateData('company',"companies", obj,'id = ?',[company['id']], 'update');
+            if(data?.affectedRows > 0){
+              setIsExpired(false)
+              SetIsModalOpenExpired(false)
+            }
+          }
+          
+
       }else{
         api.warning({
             title: ``,
@@ -274,33 +302,64 @@ export default function CompanyProfile() {
 
 
             <Modal
-            closable={{ 'aria-label': 'Custom Close Button' }}
-            open={isModalOpen}
-            onCancel={handleCancel}
-            footer={null}
-          >
-            <div className="" style={{marginBottom: 15}}>
-              <label className="form-label">Number of spaces</label>
-              <InputNumber style={{width: '100%'}} onChange={ e => setNumSpace(e)}/>
-            </div>
-            <PayPalScriptProvider
-              options={{
-                "client-id": process.env.REACT_APP_PAYPAL_CLIENT_ID,
-                currency: "USD",
-                components: "buttons,hosted-fields,funding-eligibility",
-              }}
+              closable={{ 'aria-label': 'Custom Close Button' }}
+              open={isModalOpen}
+              onCancel={handleCancel}
+              footer={null}
             >
-              <PayPalButtons
-                style={{ layout: "vertical" }}
-                createOrder={createOrder}
-                onApprove={onApprove}
-                onError={(err) => {
-                  console.error(err);
-                  setErrorMessage("An error occurred during payment.");
+              <div className="" style={{marginBottom: 15}}>
+                <label className="form-label">Number of spaces</label>
+                <InputNumber style={{width: '100%'}} onChange={ e => setNumSpace(e)}/>
+              </div>
+              <PayPalScriptProvider
+                options={{
+                  "client-id": process.env.REACT_APP_PAYPAL_CLIENT_ID,
+                  currency: "USD",
+                  components: "buttons,hosted-fields,funding-eligibility",
                 }}
-              />
-            </PayPalScriptProvider>
-          </Modal>
+              >
+                <PayPalButtons
+                  style={{ layout: "vertical" }}
+                  createOrder={createOrder}
+                  onApprove={onApprove}
+                  onError={(err) => {
+                    console.error(err);
+                    setErrorMessage("An error occurred during payment.");
+                  }}
+                />
+              </PayPalScriptProvider>
+            </Modal>
+
+            <Modal
+              closable={{ 'aria-label': 'Custom Close Button' }}
+              open={isModalOpenExpired}
+              footer={null}
+            >
+              <div className="" style={{marginBottom: 15}}>
+                <label className="form-label">Subscription Expired</label>
+                <label className="form-label">Number of spaces {employees.length}</label>
+                {/* <InputNumber style={{width: '100%'}} onChange={ e => setNumSpace(e)}/> */}
+              </div>
+              <PayPalScriptProvider
+                options={{
+                  "client-id": process.env.REACT_APP_PAYPAL_CLIENT_ID,
+                  currency: "USD",
+                  components: "buttons,hosted-fields,funding-eligibility",
+                }}
+              >
+                <PayPalButtons
+                  style={{ layout: "vertical" }}
+                  createOrder={createOrder}
+                  onApprove={onApprove}
+                  onError={(err) => {
+                    console.error(err);
+                    setErrorMessage("An error occurred during payment.");
+                  }}
+                />
+              </PayPalScriptProvider>
+            </Modal>
+
+
 
             
             <div className="min-vh-100 bg-light py-1">

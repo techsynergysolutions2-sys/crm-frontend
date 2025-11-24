@@ -125,7 +125,7 @@ function Register() {
       );
 
       const user = userCredential.user;
-      console.log(user.uid);
+      // console.log(user.uid);
 
       // Update display name
       await updateProfile(user, {
@@ -133,14 +133,22 @@ function Register() {
       });
 
       // Create employee data
-      console.log(member)
+      // console.log(member)
       
       // Create company data
       company['isactive'] = 0;
+
       const data2 = await fnCreateData('company', 'companies', company, 'new');
+      let values = {
+        companyid: data2.insertId,
+        createdby: 0,
+        title:'Administrator'
+      }
+      
+      const data3 = await fnCreateData('groups',"user_groups", values, 'new');
 
       member['uid'] = user.uid
-      member['groupid'] = 1
+      member['groupid'] = data3.insertId
       member['companyid'] = data2.insertId
       const data = await fnCreateData('employees', 'employees', member, 'new');
 
@@ -173,6 +181,12 @@ function Register() {
   const fnCreateCompany = async (uid) =>{
     company['createdby'] = uid
     company['isactive'] = 1
+
+    const currdate = new Date().toISOString().slice(0, 16)
+    const date = new Date(currdate);
+
+    date.setUTCFullYear(date.getUTCFullYear() + 1);
+    company['expirydate'] = date
     try {
       addDoc(collection(db, 'companies'), company)
       .then((docRef) => {
