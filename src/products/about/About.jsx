@@ -324,6 +324,7 @@ export default function AboutPage() {
               We're on a mission to empower businesses with intelligent CRM solutions that drive growth,
               enhance productivity, and create meaningful customer connections.
             </p>
+            <h1 className="hero-title">For only $4.99pm per user</h1>
             <Award size={60} className="mt-4" style={{ opacity: 0.9 }} />
           </div>
         </div>
